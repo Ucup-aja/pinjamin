@@ -158,6 +158,10 @@ if (!isset($_SERVER['SERVER_NAME']) || !in_array($_SERVER['SERVER_NAME'], ['loca
 function log_activity(string $action, string $details = ''): void
 {
     $user = current_user();
+    // Sanitasi: hapus newline/control char untuk mencegah log injection
+    $safe_details = preg_replace('/[\r\n\t\f\v\0]/', ' ', $details);
+    $safe_details = substr($safe_details, 0, 500); // batasi panjang
+
     $log = sprintf(
         "[%s] User: %s (ID: %s, Role: %s) | Action: %s | %s\n",
         date('Y-m-d H:i:s'),
@@ -165,8 +169,13 @@ function log_activity(string $action, string $details = ''): void
         $user['id'] ?? '-',
         $user['role'] ?? '-',
         $action,
-        $details
+        $safe_details
     );
     $log_file = __DIR__ . '/../logs/activity.log';
-    @file_put_contents($log_file, $log, FILE_APPEND | LOCK_EX);
+
+    $result = @file_put_contents($log_file, $log, FILE_APPEND | LOCK_EX);
+    if ($result === false) {
+        // Catat ke PHP error_log tanpa rekursi (jangan panggil log_activity di sini)
+        error_log("Gagal menulis activity log: $log_file (action=$action)");
+    }
 }

@@ -118,6 +118,60 @@ sudo systemctl reload httpd
 sudo systemctl reload apache2
 ```
 
+### 6. Konfigurasi Permission Direktori Logs (Penting)
+
+Apache di Arch Linux berjalan sebagai user **`http`** (UID 33). Aplikasi menulis log aktivitas ke `logs/activity.log` dan error log ke `logs/php_errors.log`.
+
+Agar Apache dapat menulis file log, direktori `logs/` dan file di dalamnya harus memiliki hak tulis untuk user `http`.
+
+**Cara direkomendasikan (setfacl — ACL persist):**
+
+```bash
+cd /srv/http/pinjamin
+# Beri akses tulis ke user http pada direktori logs
+sudo setfacl -m u:http:rwx logs/
+# Jika activity.log sudah ada, beri akses tulis juga
+sudo setfacl -m u:http:rw logs/activity.log
+# Jika php_errors.log sudah ada
+sudo setfacl -m u:http:rw logs/php_errors.log
+```
+
+**Cara alternatif (chown — jika tidak ingin menggunakan ACL):**
+
+```bash
+cd /srv/http/pinjamin
+# Ubah kepemilikan ke user http (perlu sudo)
+sudo chown -R http:http logs/
+```
+
+**Verifikasi:**
+
+```bash
+# Cek ACL
+getfacl logs/
+# Output harus mengandung: user:http:rwx
+
+# Test tulis dari PHP
+php -r '
+require_once "includes/bootstrap.php";
+$_SESSION["user_id"] = 1;
+$_SESSION["user_username"] = "admin";
+$_SESSION["user_role"] = "admin";
+log_activity("TEST_DEPLOY", "Verifikasi permission logs");
+echo "OK\n";
+'
+# Cek isi log
+cat logs/activity.log | tail -1
+```
+
+**Catatan penting:**
+
+- File `logs/activity.log` dan `logs/php_errors.log` **diabaikan oleh Git** (termasuk di `.gitignore`). File tidak akan ikut di-commit.
+- Permission/ACL **tidak tersimpan dalam Git**. Saat deployment baru, langkah di atas **harus diulang**.
+- Jika `activity.log` belum ada, aplikasi akan membuatnya otomatis saat log pertama — pastikan direktori `logs/` sudah writable oleh `http`.
+- **Jangan menggunakan `chmod 777`** — ini membuka akses tulis untuk semua user di sistem.
+- Error penulisan log dicatat ke PHP `error_log` (biasanya `/var/log/httpd/error_log` atau `/var/log/php_errors.log`), tidak ditampilkan ke pengguna.
+
 **Proteksi folder sensitif (otomatis via .htaccess di public/):**
 
 Folder `config/`, `database/`, `includes/`, `logs/` berada **di luar DocumentRoot** sehingga tidak bisa diakses langsung dari web. Tidak perlu konfigurasi Apache tambahan.
