@@ -77,151 +77,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+$pageTitle = 'Masuk | Pinjamin';
+include __DIR__ . '/../includes/partials/head_public.php';
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Pinjamin</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .login-card {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            width: 100%;
-            max-width: 400px;
-        }
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .logo h1 {
-            color: #333;
-            font-size: 28px;
-            font-weight: 600;
-        }
-        .logo p {
-            color: #666;
-            margin-top: 4px;
-        }
-        .form-group { margin-bottom: 20px; }
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: #333;
-        }
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
-        }
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn:hover { background: #5568d3; }
-        .btn:disabled { background: #a0a8e8; cursor: not-allowed; }
-        .alert {
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .alert-error { background: #fee; color: #c00; border: 1px solid #fcc; }
-        .alert-success { background: #efe; color: #060; border: 1px solid #cfc; }
-        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .demo-accounts {
-            margin-top: 30px;
-            padding: 16px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-        .demo-accounts h4 { margin-bottom: 10px; color: #333; }
-        .demo-accounts table { width: 100%; border-collapse: collapse; }
-        .demo-accounts th, .demo-accounts td { padding: 6px 8px; text-align: left; }
-        .demo-accounts th { color: #667eea; font-weight: 600; }
-        .demo-accounts code { background: #eef; padding: 2px 6px; border-radius: 3px; }
-    </style>
-</head>
-<body>
-    <div class="login-card">
-        <div class="logo">
-            <h1>Pinjamin</h1>
-            <p>Aplikasi Peminjaman Alat</p>
-        </div>
+<div class="auth-page">
+  <div class="auth-theme">
+    <?php include __DIR__ . '/../includes/partials/theme_toggle.php'; ?>
+  </div>
 
-        <?php if ($flash): ?>
-            <div class="alert alert-<?= $flash['type'] === 'error' ? 'error' : ($flash['type'] === 'success' ? 'success' : 'warning') ?>">
-                <?= e($flash['message']) ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (!empty($errors)): ?>
-            <div class="alert alert-error">
-                <ul style="margin: 0; padding-left: 20px;">
-                    <?php foreach ($errors as $err): ?>
-                        <li><?= e($err) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
-
-        <form method="POST" action="" novalidate>
-            <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
-
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" autocomplete="username" required autofocus
-                       value="<?= e($_POST['username'] ?? '') ?>">
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" autocomplete="current-password" required>
-            </div>
-
-            <button type="submit" class="btn">Masuk</button>
-        </form>
-
-        <div class="demo-accounts">
-            <h4>Akun Demo (password: <code>password123</code>)</h4>
-            <table>
-                <tr><th>Role</th><th>Username</th></tr>
-                <tr><td>Admin</td><td><code>admin</code></td></tr>
-                <tr><td>Petugas</td><td><code>petugas1</code> / <code>petugas2</code></td></tr>
-                <tr><td>Peminjam</td><td><code>peminjam_a</code> / <code>peminjam_b</code></td></tr>
-            </table>
-        </div>
+  <div class="auth-card">
+    <div class="auth-brand">
+      <h1>Pinjamin</h1>
+      <p class="brand-sub">Sistem Peminjaman Alat Sekolah</p>
     </div>
+
+    <?php if ($flash): ?>
+      <div class="alert alert-<?= $flash['type'] === 'error' ? 'error' : ($flash['type'] === 'success' ? 'success' : 'warning') ?>" role="alert">
+        <?= e($flash['message']) ?>
+      </div>
+    <?php endif; ?>
+
+    <?php if (!empty($errors)): ?>
+      <div class="alert alert-error" role="alert">
+        <ul style="margin: 0; padding-left: 20px;">
+          <?php foreach ($errors as $err): ?>
+            <li><?= e($err) ?></li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+    <?php endif; ?>
+
+    <form method="POST" action="" novalidate>
+      <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+
+      <div class="form-group">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" id="username" name="username" class="form-input"
+               autocomplete="username" required autofocus
+               value="<?= e($_POST['username'] ?? '') ?>">
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <div class="password-field">
+          <input type="password" id="password" name="password" class="form-input"
+                 autocomplete="current-password" required>
+          <button type="button" class="password-toggle" id="passwordToggle" aria-label="Tampilkan password" aria-pressed="false">
+            <svg class="icon-eye" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg class="icon-eye-off" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;">Masuk</button>
+    </form>
+
+    <p class="auth-footer">Gunakan akun yang diberikan administrator sekolah.</p>
+  </div>
+</div>
+
+<script src="<?= asset('js/theme.js') ?>"></script>
+<script>
+  (function () {
+    var toggle = document.getElementById('passwordToggle');
+    var input = document.getElementById('password');
+    if (!toggle || !input) return;
+    toggle.addEventListener('click', function () {
+      var show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      toggle.setAttribute('aria-pressed', show ? 'true' : 'false');
+      toggle.setAttribute('aria-label', show ? 'Sembunyikan password' : 'Tampilkan password');
+      toggle.querySelector('.icon-eye').style.display = show ? 'none' : 'block';
+      toggle.querySelector('.icon-eye-off').style.display = show ? 'block' : 'none';
+    });
+  })();
+</script>
 </body>
 </html>
