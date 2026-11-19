@@ -1,0 +1,36 @@
+# Konfigurasi lokal (kredensial database)
+config/config.php
+
+# Log aplikasi
+logs/*.log
+logs/*.log.*
+
+# Session files (jika menggunakan file-based session)
+sessions/
+
+# File temporary
+*.tmp
+*.temp
+temp/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Composer (jika nanti digunakan)
+vendor/
+composer.lock
+
+# Environment
+.env
+.env.local
+
+# Database backups
+*.sql.gz
+*.dump
